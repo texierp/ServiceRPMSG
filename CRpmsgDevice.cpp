@@ -3,9 +3,11 @@
 #include <termios.h>
 #include <QFile>
 #include <QDebug>
+#include <QElapsedTimer>
 
 CRpmsgDevice::CRpmsgDevice(const QString deviceName) : m_deviceName(deviceName)
 {
+    m_rpmsgDevice = new QFile(deviceName);
 }
 
 CRpmsgDevice::~CRpmsgDevice()
@@ -62,10 +64,11 @@ qint64 CRpmsgDevice::writeData(QByteArray command)
     return status;
 }
 
-QByteArray CRpmsgDevice::readData(QByteArray command)
+QByteArray CRpmsgDevice::readData(QByteArray command, quint32 length)
 {
     m_rpmsgDevice->write(command);
     m_rpmsgDevice->flush();
-    return m_rpmsgDevice->readLine(64);
+    QByteArray array = m_rpmsgDevice->readLine(length);
+    return array;
 }
 
