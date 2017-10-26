@@ -3,7 +3,10 @@
 #include <termios.h>
 #include <QFile>
 #include <QDebug>
+#include <QThread>
 #include <QElapsedTimer>
+
+#define MAX_DATA_SIZE 64
 
 CRpmsgDevice::CRpmsgDevice(const QString deviceName) : m_deviceName(deviceName)
 {
@@ -60,15 +63,16 @@ qint64 CRpmsgDevice::writeData(QByteArray command)
 {
     qint64 status = m_rpmsgDevice->write(command);
     m_rpmsgDevice->flush();
+    m_rpmsgDevice->readLine(MAX_DATA_SIZE);
 
     return status;
 }
 
-QByteArray CRpmsgDevice::readData(QByteArray command, quint32 length)
+QByteArray CRpmsgDevice::readData(QByteArray command)
 {
     m_rpmsgDevice->write(command);
     m_rpmsgDevice->flush();
-    QByteArray array = m_rpmsgDevice->readLine(length);
+    QByteArray array = m_rpmsgDevice->readLine(MAX_DATA_SIZE);
     return array;
 }
 

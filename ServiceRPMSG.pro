@@ -1,4 +1,4 @@
-QT += core serialport
+QT += core serialport dbus
 QT -= gui
 
 TARGET = ServiceRPMSG
@@ -17,6 +17,12 @@ HEADERS += \
     CRpmsgDevice.h \
     CRpmsgProtocol.h
 
-target.path = /usr/bin
+dbus-etc.files = dbus/iot.service.rpmsg.conf
+dbus-etc.path = /etc/dbus-1/system.d/
 
-INSTALLS+= target
+dbus-usr.files = dbus/iot.service.rpmsg.service
+dbus-usr.path = /usr/share/dbus-1/system-services/
+
+target.path= /usr/bin
+
+INSTALLS += target dbus-etc dbus-usr

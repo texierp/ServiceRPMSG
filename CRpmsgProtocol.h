@@ -21,15 +21,21 @@ public:
 
 public:
     //getters
-    quint16 getCO2();
-    quint16 getTVOC();
-    Status  getStatus();
+    quint16 co2() const;
+    quint16 tvoc() const;
+    quint8 status() const;
 
     //setters
     void setLED(bool value);
 
+    //action
+    void readAllValues();
+
 private:
     CRpmsgDevice    *m_device;
+    quint16         m_co2;
+    quint16         m_tvoc;
+    quint8          m_status;
 };
 
 #endif // CRPMSGPROTOCOL_H

@@ -14,7 +14,7 @@ public:
     bool openDevice();
     void closeDevice();
     qint64 writeData(QByteArray command);
-    QByteArray readData(QByteArray command, quint32 length);
+    QByteArray readData(QByteArray command);
 
 private:
     QFile   *m_rpmsgDevice;

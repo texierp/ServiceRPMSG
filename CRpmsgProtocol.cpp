@@ -5,14 +5,21 @@
 
 #define RPMSG_PORT "/dev/ttyRPMSG"
 
-#define GET_CO2     "?co2"
-#define GET_STATUS  "?status"
-#define GET_TVOC    "?tvoc"
-#define SET_LED     "!out_LED:"
+#define GET_VALUES     "?getAirQuality"
+#define SET_LED         "!out_LED:"
 
-quint16 retrieveData(QByteArray array)
+quint16 dataToUin16(QByteArray array)
 {
     quint16 value;
+    QDataStream str(array);
+    str.setByteOrder(QDataStream::BigEndian);
+    str >> value;
+    return value;
+}
+
+quint8 dataToUin8(QByteArray array)
+{
+    quint8 value;
     QDataStream str(array);
     str.setByteOrder(QDataStream::BigEndian);
     str >> value;
@@ -33,22 +40,16 @@ CRpmsgProtocol::~CRpmsgProtocol()
     delete m_device;
 }
 
-quint16 CRpmsgProtocol::getCO2()
+void CRpmsgProtocol::readAllValues()
 {
-    QByteArray array = m_device->readData(GET_CO2, 3);
-    return retrieveData(array);
-}
-
-quint16 CRpmsgProtocol::getTVOC()
-{
-    QByteArray array = m_device->readData(GET_TVOC, 3);
-    return retrieveData(array);
-}
-
-CRpmsgProtocol::Status CRpmsgProtocol::getStatus()
-{
-    QByteArray array = m_device->readData(GET_STATUS, 2);
-    return (CRpmsgProtocol::Status)array.toInt();
+    QByteArray array = m_device->readData(GET_VALUES);
+    if (array.length() != 6)
+        qDebug() << array.length() << array[array.length()-1];
+    QDataStream str(array);
+    str.setByteOrder(QDataStream::BigEndian);
+    str >> m_co2
+        >> m_tvoc
+        >> m_status;
 }
 
 void CRpmsgProtocol::setLED(bool value)
@@ -57,4 +58,17 @@ void CRpmsgProtocol::setLED(bool value)
     m_device->writeData(command.toLatin1().data());
 }
 
+quint16 CRpmsgProtocol::co2() const
+{
+    return m_co2;
+}
 
+quint16 CRpmsgProtocol::tvoc() const
+{
+    return m_tvoc;
+}
+
+quint8 CRpmsgProtocol::status() const
+{
+    return m_status;
+}
