@@ -61,8 +61,6 @@ void CRpmsgInterface::readData()
     quint16 tvoc = m_protocol->tvoc();
     quint8 status = m_protocol->status();
 
-    qDebug() << co2 << tvoc << status;
-
     //mise à jour de la mémoire partagée
     if (this->isAttached())
     {

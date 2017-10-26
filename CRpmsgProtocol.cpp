@@ -43,8 +43,6 @@ CRpmsgProtocol::~CRpmsgProtocol()
 void CRpmsgProtocol::readAllValues()
 {
     QByteArray array = m_device->readData(GET_VALUES);
-    if (array.length() != 6)
-        qDebug() << array.length() << array[array.length()-1];
     QDataStream str(array);
     str.setByteOrder(QDataStream::BigEndian);
     str >> m_co2
